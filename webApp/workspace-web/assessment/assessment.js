@@ -1,4 +1,38 @@
 'use strict'
+const userNameInput = document.getElementById('user-name')
+const assessmentButton = document.getElementById('assessment')
+const resultDivided = document.getElementById('result-area')
+const tweetDivided = document.getElementById('tweet-area')
+
+/**
+ * 指定した要素の子どもを全て削除する
+ * @param {HTMLElement} element HTMLの要素
+ */
+function removeAllChildren(element) {
+  while (element.firstChild) { // 子どもの要素があるかぎり削除
+    element.removeChild(element.firstChild);
+  }
+}
+
+assessmentButton.onclick = function() {
+  const userName = userNameInput.value
+  if (userName.length === 0) {
+    return;
+  }
+  console.log(userName);
+  // TODO 診断結果表示エリア
+  const header = document.createElement('h3')
+  header.innerText = '診断結果'
+  resultDivided.appendChild(header);
+
+  const paragraph = document.createElement('p')
+  const result = assessment(userName);
+  paragraph.innerText = result;
+  resultDivided.appendChild(paragraph)
+
+  // TODO ツイートエリア
+}
+
 const answers = [
   '{userName}のいいところは声です。{userName}の特徴的な声は皆を惹きつけ、心に残ります。',
   '{userName}のいいところはまなざしです。{userName}に見つめられた人は、気になって仕方がないでしょう。',
@@ -25,19 +59,26 @@ const answers = [
  */
 function assessment(userName) {
   // 全文字のコード番号を取得してそれを足し合わせる
-  let sumOfCharCode = 0;
+  let sumOfCharCode = 0
   for (let i = 0; i < userName.length; i++) {
-    sumOfCharCode = sumOfCharCode + userName.charCodeAt(i);
+    sumOfCharCode = sumOfCharCode + userName.charCodeAt(i)
   }
 
   // 文字のコード番号の合計を回答の数で割って添字の数値を求める
-  const index = sumOfCharCode % answers.length;
-  let result = answers[index];
+  const index = sumOfCharCode % answers.length
+  let result = answers[index]
 
-  result = result.replace(/\{userName\}/g, userName);
-  return result;
+  result = result.replace(/\{userName\}/g, userName)
+  return result
 }
 
-console.log(assessment('太郎'));
-console.log(assessment('次郎'));
-console.log(assessment('太郎'));
+// テストコード
+console.assert(
+  assessment('太郎') ===
+    '太郎のいいところは決断力です。太郎がする決断にいつも助けられる人がいます。',
+  '診断結果の文言の特定の部分を名前に置き換える処理が正しくありません。'
+)
+console.assert(
+  assessment('太郎') === assessment('太郎'),
+  '入力が同じ名前なら同じ診断結果を出力する処理が正しくありません。'
+)
